@@ -1,8 +1,8 @@
-import {UseState} from 'react'
+import {useState} from 'react'
 import { creaRicettaVuota } from '../data/models' // Importo la funzione per creare una ricetta vuota
 
 export default function RecipeForm({ onSave}) {
-    const [ricetta, setRicetta] = UseState(creaRicettaVuota()) // Inizializzo lo stato con una ricetta vuota
+    const [ricetta, setRicetta] = useState(creaRicettaVuota()) // Inizializzo lo stato con una ricetta vuota
 
     const handleCampo = (campo, valore) => {
         setRicetta(prev => ({ ...prev, [campo]: valore })) // Aggiorno il campo specificato nella ricetta
@@ -69,6 +69,8 @@ export default function RecipeForm({ onSave}) {
             value={ricetta.calorie}
             onChange={e => handleCampo('calorie', e.target.value)}
              />
+
+             <button className="btn-primary" onClick={handleSubmit}>Salva ricetta</button>
         </div>
     )
 }
