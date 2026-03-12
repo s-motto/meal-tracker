@@ -72,11 +72,11 @@ export default function MealLog() {
       </div>
 
       {/* Sommario calorie */}
-      <div className="card bg-green-50 border-green-200 text-center">
-        <p className="text-sm text-gray-500">Calorie totali</p>
-        <p className="text-3xl font-semibold text-green-600">{totaleCalorie}</p>
-        <p className="text-sm text-gray-400">kcal</p>
-      </div>
+      <div className="card bg-blush border-blush text-center">
+  <p className="text-sm text-gray-500">Calorie totali</p>
+  <p className="text-3xl font-semibold text-primary">{totaleCalorie}</p>
+  <p className="text-sm text-gray-400">kcal</p>
+</div>
 
       {/* Lista pasti */}
       <div className="flex flex-col gap-3">

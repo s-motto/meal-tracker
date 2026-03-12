@@ -1,53 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #89023E;
+  --color-primary-light: #CC7178;
+  --color-blush: #FFD9DA;
+  --color-blush-light: #F3E1DD;
+  --color-green: #C7D9B7;
+
+  --font-display: 'Libre Baskerville', Georgia, serif;
+  --font-body: 'Lato', sans-serif;
+}
+
+* {
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+}
 
 @layer components {
   .input-base {
-    @apply border border-gray-300 rounded-lg px-4 py-2 w-full
-           focus:outline-none focus:ring-2 focus:ring-green-400;
+    @apply border border-blush rounded-lg px-4 py-2 w-full bg-white
+           focus:outline-none focus:ring-2 focus:ring-primary-light;
   }
 
   .btn-primary {
-    @apply bg-green-500 hover:bg-green-600 text-white font-medium
+    @apply bg-primary hover:bg-primary-light text-white font-medium
            py-2 px-4 rounded-lg transition-colors;
   }
 
   .btn-danger {
-    @apply border border-gray-300 hover:border-red-400 hover:text-red-500
+    @apply border border-blush hover:border-primary-light hover:text-primary
            py-1 px-3 rounded-lg text-sm transition-colors;
   }
 
   .btn-secondary {
-    @apply border border-gray-300 hover:border-green-400 hover:text-green-600
+    @apply border border-blush hover:border-primary-light hover:text-primary
            py-1 px-3 rounded-lg text-sm transition-colors;
   }
 
   .card {
-    @apply border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow;
+    @apply border border-blush rounded-xl p-4 hover:shadow-md transition-shadow bg-white;
   }
 
   .btn-tipo {
-  @apply flex-1 py-2 rounded-lg text-sm font-medium border transition-colors capitalize
-         border-gray-300 hover:border-green-400 hover:text-green-600;
-}
+    @apply flex-1 py-2 rounded-lg text-sm font-medium border transition-colors capitalize
+           border-blush hover:border-primary-light hover:text-primary;
+  }
 
-.btn-tipo-attivo {
-  @apply flex-1 py-2 rounded-lg text-sm font-medium border transition-colors capitalize
-         bg-green-500 text-white border-green-500;
-}
+  .btn-tipo-attivo {
+    @apply flex-1 py-2 rounded-lg text-sm font-medium border transition-colors capitalize
+           bg-primary text-white border-primary;
+  }
 
-.btn-switch {
-  @apply flex-1 py-2 rounded-lg text-sm border transition-colors border-gray-300;
-}
+  .btn-switch {
+    @apply flex-1 py-2 rounded-lg text-sm border transition-colors border-blush;
+  }
 
-.btn-switch-attivo {
-  @apply flex-1 py-2 rounded-lg text-sm border transition-colors bg-gray-100 font-medium;
-}
+  .btn-switch-attivo {
+    @apply flex-1 py-2 rounded-lg text-sm border transition-colors bg-blush font-medium;
+  }
 
-.nav-link {
-  @apply text-gray-500 hover:text-gray-800 transition-colors;
-}
+  .nav-link {
+    @apply text-gray-500 hover:text-primary transition-colors;
+  }
 
-.nav-link-attivo {
-  @apply text-green-600 font-medium;
-}
+  .nav-link-attivo {
+    @apply text-primary font-medium;
+  }
 }
