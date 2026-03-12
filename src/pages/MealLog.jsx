@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useMeals } from '../hooks/useMeals'
-import { useRecipes } from '../hooks/useRecipes'
 import MealForm from '../components/MealForm'
 import Toast from '../components/Toast'
 
@@ -24,6 +23,13 @@ export default function MealLog() {
     const [mostraForm, setMostraForm] = useState(false) // stato per mostrare o nascondere il form
     const {aggiungi, elimina, getMealByDate} = useMeals() // prendo le funzioni per aggiungere, eliminare e ottenere pasti per data dal contesto
     const [toast, setToast] = useState('') // stato per il messaggio del toast
+    const [toastId, setToastId] = useState(0) // stato per forzare il ri-render del toast quando il messaggio cambia
+    const [confermaId, setConfermaId] = useState(null) // stato per gestire la conferma di eliminazione del pasto
+
+    const mostraToast = (msg) => {
+      setToast(msg)
+      setToastId(id => id + 1)
+    }
 
     const pastiDelGiorno = getMealByDate(dataSelezionata) // ottengo i pasti per la data selezionata
 
@@ -38,15 +44,21 @@ export default function MealLog() {
     }
 
     const handleSave = (pasto) => {
-        aggiungi(pasto) // aggiungo il pasto al contesto
-        setMostraForm(false) // nascondo il form
-        setToast('Pasto aggiunto con successo!') // mostro un toast di conferma
-    }
+        aggiungi(pasto) // aggiungo il pasto usando la funzione del contesto
+        setMostraForm(false) // nascondo il form dopo il salvataggio
+        mostraToast('Pasto aggiunto con successo!')
+      }
 
     const handleElimina = (id) => {
-        elimina(id)
-         setToast('Pasto eliminato')
-    }
+  if (confermaId === id) {
+    elimina(id)
+    setConfermaId(null)
+    mostraToast('Pasto eliminato')
+  } else {
+    setConfermaId(id)
+    setTimeout(() => setConfermaId(null), 3000)
+  }
+}
 
     return (
     <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-6">
@@ -93,11 +105,11 @@ export default function MealLog() {
               )}
             </div>
             <button
-              className="btn-danger"
-              onClick={() => handleElimina(pasto.id)}
-            >
-              ✕
-            </button>
+  className={confermaId === pasto.id ? 'btn-primary' : 'btn-danger'}
+  onClick={() => handleElimina(pasto.id)}
+>
+  {confermaId === pasto.id ? 'Sicura?' : '✕'}
+</button>
           </div>
         ))}
       </div>
@@ -110,9 +122,11 @@ export default function MealLog() {
       {/* Form aggiunta pasto */}
       {mostraForm ? (
         <div className="card">
-          <MealForm onSave={handleSave}
-           onError={(msg) => setToast(msg)} 
-           dataSelezionata={dataSelezionata} />
+          <MealForm
+             onSave={handleSave}
+             onError={mostraToast}
+              dataSelezionata={dataSelezionata}
+          />
           <button
             className="btn-secondary w-full mt-3"
             onClick={() => setMostraForm(false)}
@@ -128,7 +142,7 @@ export default function MealLog() {
           + Aggiungi pasto
         </button>
       )}
-      <Toast messaggio={toast} onClose={() => setToast('')} />
+      <Toast key={toastId} messaggio={toast} onClose={() => setToast('')} />
 
     </div>
   )
