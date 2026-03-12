@@ -59,7 +59,7 @@ export default function MealLog() {
           </p>
           {dataSelezionata !== dataOggi() && (
             <button
-              className="text-xs text-green-600 hover:underline mt-1"
+              className="text-xs text-primary hover:underline mt-1"
               onClick={() => setDataSelezionata(dataOggi())}
             >
               Torna ad oggi
@@ -72,7 +72,7 @@ export default function MealLog() {
       </div>
 
       {/* Sommario calorie */}
-      <div className="card bg-blush border-blush text-center">
+      <div className="card bg-white border-blush shadow-sm text-center">
   <p className="text-sm text-gray-500">Calorie totali</p>
   <p className="text-3xl font-semibold text-primary">{totaleCalorie}</p>
   <p className="text-sm text-gray-400">kcal</p>
