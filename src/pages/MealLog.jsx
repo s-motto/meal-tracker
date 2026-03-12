@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useMeals } from '../hooks/useMeals'
 import { useRecipes } from '../hooks/useRecipes'
 import MealForm from '../components/MealForm'
+import Toast from '../components/Toast'
 
 function dataOggi() {
     return new Date().toISOString().split('T')[0]; // restituisce la data odierna in formato YYYY-MM-DD
@@ -23,6 +24,7 @@ export default function MealLog() {
     const [mostraForm, setMostraForm] = useState(false) // stato per mostrare o nascondere il form
     const {aggiungi, elimina, getMealByDate} = useMeals() // prendo le funzioni per aggiungere, eliminare e ottenere pasti per data dal contesto
     const {ricette} = useRecipes() // prendo le ricette dal contesto
+    const [toast, setToast] = useState('') // stato per il messaggio del toast
 
     const pastiDelGiorno = getMealByDate(dataSelezionata) // ottengo i pasti per la data selezionata
 
@@ -39,6 +41,12 @@ export default function MealLog() {
     const handleSave = (pasto) => {
         aggiungi(pasto) // aggiungo il pasto al contesto
         setMostraForm(false) // nascondo il form
+        setToast('Pasto aggiunto con successo!') // mostro un toast di conferma
+    }
+
+    const handleElimina = (id) => {
+        elimina(id)
+         setToast('Pasto eliminato')
     }
 
     const getNomeRicetta = (ricettaId) => {
@@ -91,7 +99,7 @@ export default function MealLog() {
             </div>
             <button
               className="btn-danger"
-              onClick={() => elimina(pasto.id)}
+              onClick={() => handleElimina(pasto.id)}
             >
               ✕
             </button>
@@ -123,6 +131,7 @@ export default function MealLog() {
           + Aggiungi pasto
         </button>
       )}
+      <Toast messaggio={toast} onClose={() => setToast('')} />
 
     </div>
   )

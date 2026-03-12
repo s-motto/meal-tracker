@@ -1,11 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useRecipes } from '../hooks/useRecipes'
+import { useState } from 'react'
 
 export default function RecipeDetail() {
     const { id } = useParams() // Ottengo l'id della ricetta dai parametri dell'URL
     const { ricette, elimina } = useRecipes() // Uso il custom hook per ottenere le ricette e la funzione di eliminazione
     const navigate = useNavigate() // Hook per la navigazione
     const ricetta = ricette.find(r => r.id === id) // Trovo la ricetta corrispondente all'id
+    const [confermaElimina, setConfermaElimina] = useState(false)
 
     if (!ricetta) return (
     <div className="max-w-xl mx-auto p-6 text-center">
@@ -17,10 +19,13 @@ export default function RecipeDetail() {
   )
 
    const handleElimina = () => {
-    if (window.confirm('Sei sicuro di voler eliminare questa ricetta?')) {
-      elimina(ricetta.id) // Elimino la ricetta usando la funzione del custom hook
-      navigate('/ricette') // Torno alla lista delle ricette dopo l'eliminazione
-    }
+  if (confermaElimina) {
+    elimina(ricetta.id)
+    navigate('/ricette')
+  } else {
+    setConfermaElimina(true)
+    setTimeout(() => setConfermaElimina(false), 3000)
+  }
 }
 
    
@@ -42,9 +47,12 @@ export default function RecipeDetail() {
     >
       Modifica
     </button>
-    <button className="btn-danger" onClick={handleElimina}>
-      Elimina
-    </button>
+    <button
+  className={confermaElimina ? 'btn-primary' : 'btn-danger'}
+  onClick={handleElimina}
+>
+  {confermaElimina ? 'Sicura?' : 'Elimina'}
+</button>
   </div>
 </div>
 
