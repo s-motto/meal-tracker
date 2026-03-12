@@ -71,13 +71,6 @@ export default function MealLog() {
         </button>
       </div>
 
-      {/* Sommario calorie */}
-      <div className="card bg-white border-blush shadow-sm text-center">
-  <p className="text-sm text-gray-500">Calorie totali</p>
-  <p className="text-3xl font-semibold text-primary">{totaleCalorie}</p>
-  <p className="text-sm text-gray-400">kcal</p>
-</div>
-
       {/* Lista pasti */}
       <div className="flex flex-col gap-3">
         {pastiDelGiorno.length === 0 && (
@@ -105,6 +98,11 @@ export default function MealLog() {
           </div>
         ))}
       </div>
+
+      {/* Sommario calorie */}
+     <div className="card shadow-sm">
+  <p className="text-sm text-gray-500">Calorie totali: <span className="text-gray-700 font-medium">{totaleCalorie} kcal</span></p>
+</div>
 
       {/* Form aggiunta pasto */}
       {mostraForm ? (

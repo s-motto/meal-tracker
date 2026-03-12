@@ -25,63 +25,63 @@ export default function RecipeDetail() {
 
    
     return (
-    <div className="max-w-xl mx-auto p-6 flex flex-col gap-6">
+  <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-6">
 
-      <div className="flex justify-between items-start">
-        <h1 className="text-2xl font-semibold">{ricetta.nome}</h1>
-        <div className="flex gap-2">
-          <button
-            className="btn-secondary"
-            onClick={() => navigate(`/ricette/${ricetta.id}/modifica`)}
-          >
-            Modifica
-          </button>
-          <button className="btn-danger" onClick={handleElimina}>
-            Elimina
-          </button>
-        </div>
-      </div>
+    {/* Header */}
+<div className="flex justify-between items-start">
+  <div>
+    <h1 className="text-3xl">{ricetta.nome}</h1>
+    {ricetta.calorie && (
+      <p className="text-sm text-gray-500 mt-1">{ricetta.calorie} kcal per porzione</p>
+    )}
+  </div>
+  <div className="flex gap-2">
+    <button
+      className="btn-secondary"
+      onClick={() => navigate(`/ricette/${ricetta.id}/modifica`)}
+    >
+      Modifica
+    </button>
+    <button className="btn-danger" onClick={handleElimina}>
+      Elimina
+    </button>
+  </div>
+</div>
 
-      {ricetta.calorie && (
-        <p className="text-gray-500">{ricetta.calorie} kcal</p>
-      )}
+   
 
-      {ricetta.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {ricetta.tags.map(tag => (
-            <span key={tag} className="bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
 
-      <div>
-        <h2 className="font-medium mb-2">Ingredienti</h2>
-        <ul className="flex flex-col gap-1">
-          {ricetta.ingredienti.map((ing, index) => (
-            <li key={index} className="flex justify-between border-b border-gray-100 py-1">
-              <span>{ing.nome}</span>
-              <span className="text-gray-500">{ing.quantita}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {ricetta.istruzioni && (
-        <div>
-          <h2 className="font-medium mb-2">Istruzioni</h2>
-          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-            {ricetta.istruzioni}
-          </p>
-        </div>
-      )}
-
-      <button className="btn-secondary self-start" onClick={() => navigate('/ricette')}>
-        ← Torna alle ricette
-      </button>
-
+    {/* Ingredienti */}
+    <div className="card shadow-sm">
+      <h2 className="font-medium mb-3">Ingredienti</h2>
+      <ul className="flex flex-col divide-y divide-blush">
+        {ricetta.ingredienti.map((ing, index) => (
+          <li key={index} className="flex justify-between py-2">
+            <span>{ing.nome}</span>
+            <span className="text-primary font-medium">{ing.quantita}</span>
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+
+    {/* Istruzioni */}
+    {ricetta.istruzioni && (
+      <div className="card shadow-sm">
+        <h2 className="font-medium mb-3">Istruzioni</h2>
+        <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+          {ricetta.istruzioni}
+        </p>
+      </div>
+    )}
+
+    <button
+      className="btn-secondary self-start"
+      onClick={() => navigate('/ricette')}
+    >
+      ← Torna alle ricette
+    </button>
+
+  </div>
+)
 
 }
