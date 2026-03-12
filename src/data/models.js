@@ -12,3 +12,15 @@ export function creaRicettaVuota() {
     dataCreazione: new Date().toISOString().split('T')[0] // Aggiungo la data di creazione in formato YYYY-MM-DD
   }
 }
+
+// Funzione per creare un pasto vuoto
+export function creaPastoVuoto() {
+  return {
+    id: uuidv4(), // Genero un ID unico per il pasto
+    data: new Date().toISOString().split('T')[0], // Imposto la data di default a oggi in formato YYYY-MM-DD
+    tipo: 'pranzo', // Imposto il tipo di pasto di default a "pranzo"
+    ricettaId: null, // Se è un pasto libero, ricettaId sarà null 
+    descrizione: '', // Per i pasti liberi, l'utente può inserire una descrizione
+    calorie: '' // Per i pasti liberi, l'utente può inserire le calorie
+  }
+}
