@@ -32,7 +32,7 @@ export default function RecipeForm({ onSave}) {
 
     return (
         <div>
-            <input
+            <input className="input-base"
             placeholder='Nome ricetta'
             value={ricetta.nome}
             onChange={e => handleCampo('nome', e.target.value)}
@@ -40,29 +40,30 @@ export default function RecipeForm({ onSave}) {
             
             <h3>Ingredienti</h3>
             {ricetta.ingredienti.map((ing, index) => (
-                <div key={index} style={{ display: 'flex', gap: 8}}>
-                    <input
+                <div key={index} >
+                    <input className="input-base"
                     placeholder='Nome ingrediente'
                     value={ing.nome}
                     onChange={e => handleIngrediente(index, 'nome', e.target.value)}
                         />
-                    <input
+                    <input className="input-base w-28"
                     placeholder='Quantità'
                     value={ing.quantita}
                     onChange={e => handleIngrediente(index, 'quantita', e.target.value)}
                     />
-                    <button onClick={() => rimuoviIngrediente(index)}>Rimuovi</button>
+                    <button className="btn-danger" onClick={() => rimuoviIngrediente(index)}>Rimuovi</button>
                     </div>
             ))}
-            <button onClick={aggiungiIngrediente}>Aggiungi ingrediente</button>
+            <button className="btn-secondary" onClick={aggiungiIngrediente}>Aggiungi ingrediente</button>
 
             <textarea
+            className="input-base"
             placeholder='Istruzioni'
             value={ricetta.istruzioni}
             onChange={e => handleCampo('istruzioni', e.target.value)}
              />
 
-            <input
+            <input className="input-base w-28"
             type="number"
             placeholder='Calorie'
             value={ricetta.calorie}
