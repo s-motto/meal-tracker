@@ -11,7 +11,7 @@ function salvaSuStorage(ricette) {
     localStorage.setItem(CHIAVE, JSON.stringify(ricette)); // Salvo le ricette come stringa JSON
 }
 
-export default function useRecipes() {
+export function useRecipes() {
     const [ricette, setRicette] = useState(caricaDaStorage); // Inizializzo lo stato con le ricette caricate da localStorage
 
     const aggiungi = (ricetta) => {
