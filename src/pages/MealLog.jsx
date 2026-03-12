@@ -55,7 +55,7 @@ export default function MealLog() {
         </button>
         <div className="text-center">
           <p className="font-semibold capitalize">
-            {formatDataLeggibile(dataSelezionata)}
+            {formatData(dataSelezionata)}
           </p>
           {dataSelezionata !== dataOggi() && (
             <button
