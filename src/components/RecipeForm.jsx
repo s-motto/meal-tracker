@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import { creaRicettaVuota } from '../data/models' // Importo la funzione per creare una ricetta vuota
 
-export default function RecipeForm({ onSave}) {
-    const [ricetta, setRicetta] = useState(creaRicettaVuota()) // Inizializzo lo stato con una ricetta vuota
+export default function RecipeForm({ onSave, ricettaIniziale }) { // Componente per il form di creazione/modifica ricetta, riceve la funzione onSave e la ricetta iniziale come props
+    const [ricetta, setRicetta] = useState(ricettaIniziale || creaRicettaVuota()) // Inizializzo lo stato con una ricetta vuota
 
     const handleCampo = (campo, valore) => {
         setRicetta(prev => ({ ...prev, [campo]: valore })) // Aggiorno il campo specificato nella ricetta
@@ -32,7 +32,7 @@ export default function RecipeForm({ onSave}) {
 
     return (
   <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-6">
-    <h1 className="text-2xl">Nuova ricetta</h1>
+    <h1 className="text-2xl">{ricettaIniziale ? 'Modifica ricetta' : 'Nuova ricetta'}</h1>
 
     {/* Nome */}
     <div className="flex flex-col gap-1">

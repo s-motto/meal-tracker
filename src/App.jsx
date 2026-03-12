@@ -7,6 +7,7 @@ import RecipeList from './pages/RecipeList'
 import RecipeDetail from './pages/RecipeDetail'
 import RecipeForm from './components/RecipeForm'
 import { useRecipes } from './hooks/useRecipes'
+import RecipeEdit from './pages/RecipeEdit'
 
 function NuovaRicetta() {
   const { aggiungi } = useRecipes()
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/ricette" element={<RecipeList />} />
         <Route path="/ricette/nuova" element={<NuovaRicetta />} />
         <Route path="/ricette/:id" element={<RecipeDetail />} />
+        <Route path="/ricette/:id/modifica" element={<RecipeEdit />} />
       </Routes>
     </Layout>
   )
