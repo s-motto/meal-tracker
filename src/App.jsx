@@ -1,6 +1,4 @@
-import { useNavigate } from 'react-router-dom'
-
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import MealLog from './pages/MealLog'
 import RecipeList from './pages/RecipeList'

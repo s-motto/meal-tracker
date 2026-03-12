@@ -22,8 +22,8 @@ export function useMeals() {
     salvaSuStorage(nuovi);
     }
 
-    const aggiorna = (PastoModificato) => {
-      const nuovi = pasti.map(p => p.id === PastoModificato.id ? PastoModificato : p); 
+    const aggiorna = (pastoModificato) => {
+  const nuovi = pasti.map(p => p.id === pastoModificato.id ? pastoModificato : p)
       setPasti(nuovi);
       salvaSuStorage(nuovi);
     }

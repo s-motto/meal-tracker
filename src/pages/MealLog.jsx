@@ -23,7 +23,6 @@ export default function MealLog() {
     const [dataSelezionata, setDataSelezionata] = useState(dataOggi()) // stato per la data selezionata, inizializzata con la data odierna
     const [mostraForm, setMostraForm] = useState(false) // stato per mostrare o nascondere il form
     const {aggiungi, elimina, getMealByDate} = useMeals() // prendo le funzioni per aggiungere, eliminare e ottenere pasti per data dal contesto
-    const {ricette} = useRecipes() // prendo le ricette dal contesto
     const [toast, setToast] = useState('') // stato per il messaggio del toast
 
     const pastiDelGiorno = getMealByDate(dataSelezionata) // ottengo i pasti per la data selezionata
@@ -47,10 +46,6 @@ export default function MealLog() {
     const handleElimina = (id) => {
         elimina(id)
          setToast('Pasto eliminato')
-    }
-
-    const getNomeRicetta = (ricettaId) => {
-        return ricette.find(r => r.id === ricettaId)?.nome || 'Pasto libero' // restituisco il nome della ricetta se c'è, altrimenti "Pasto libero"
     }
 
     return (
