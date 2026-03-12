@@ -22,6 +22,12 @@ export function useMeals() {
     salvaSuStorage(nuovi);
     }
 
+    const aggiorna = (PastoModificato) => {
+      const nuovi = pasti.map(p => p.id === PastoModificato.id ? PastoModificato : p); 
+      setPasti(nuovi);
+      salvaSuStorage(nuovi);
+    }
+
 const elimina = (id) => {
   const nuovi = pasti.filter(p => p.id !== id);
   setPasti(nuovi);
@@ -32,7 +38,7 @@ const getMealByDate = (data) => {
   return pasti.filter(p => p.data === data); // restituisce un array di pasti che hanno la data specificata
 }
 
-    return { pasti, aggiungi, elimina, getMealByDate }
+    return { pasti, aggiungi, aggiorna, elimina, getMealByDate }
 }
 
 
