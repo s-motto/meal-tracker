@@ -42,4 +42,12 @@
 .btn-switch-attivo {
   @apply flex-1 py-2 rounded-lg text-sm border transition-colors bg-gray-100 font-medium;
 }
+
+.nav-link {
+  @apply text-gray-500 hover:text-gray-800 transition-colors;
+}
+
+.nav-link-attivo {
+  @apply text-green-600 font-medium;
+}
 }
