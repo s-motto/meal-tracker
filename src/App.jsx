@@ -6,17 +6,25 @@ import RecipeDetail from './pages/RecipeDetail'
 import RecipeForm from './components/RecipeForm'
 import { useRecipes } from './hooks/useRecipes'
 import RecipeEdit from './pages/RecipeEdit'
+import { useState } from 'react'
+import Toast from './components/Toast'
 
 function NuovaRicetta() {
   const { aggiungi } = useRecipes()
   const navigate = useNavigate()
+  const [toast, setToast] = useState('')
 
   const handleSave = (ricetta) => {
     aggiungi(ricetta)
     navigate('/ricette')
   }
 
-  return <RecipeForm onSave={handleSave} />
+  return (
+    <>
+      <RecipeForm onSave={handleSave} onError={(msg) => setToast(msg)} />
+      <Toast messaggio={toast} onClose={() => setToast('')} />
+    </>
+  )
 }
 
 export default function App() {

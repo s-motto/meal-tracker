@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import { creaRicettaVuota } from '../data/models' // Importo la funzione per creare una ricetta vuota
 
-export default function RecipeForm({ onSave, ricettaIniziale }) { // Componente per il form di creazione/modifica ricetta, riceve la funzione onSave e la ricetta iniziale come props
+export default function RecipeForm({ onSave, onError, ricettaIniziale }) { // Componente per il form di creazione/modifica ricetta, riceve la funzione onSave e la ricetta iniziale come props
     const [ricetta, setRicetta] = useState(ricettaIniziale || creaRicettaVuota()) // Inizializzo lo stato con una ricetta vuota
 
     const handleCampo = (campo, valore) => {
@@ -25,7 +25,7 @@ export default function RecipeForm({ onSave, ricettaIniziale }) { // Componente 
     }
 
     const handleSubmit = () => {
-        if (!ricetta.nome.trim()) return alert('Il nome della ricetta è obbligatorio') // Verifico che il nome della ricetta non sia vuoto
+        if (!ricetta.nome.trim()) return onError?.('Il nome è obbligatorio') // Verifico che il nome della ricetta non sia vuoto, altrimenti mostro un errore
         onSave(ricetta) // Chiamo la funzione onSave passata come prop con la ricetta da salvare
         setRicetta(creaRicettaVuota()) // Resetto il form a una ricetta vuota dopo il salvataggio
     }

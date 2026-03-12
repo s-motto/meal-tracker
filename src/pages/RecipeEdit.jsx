@@ -1,11 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useRecipes } from '../hooks/useRecipes'
 import RecipeForm from '../components/RecipeForm'
+import { useState } from 'react'
+import Toast from '../components/Toast'
 
 export default function RecipeEdit() { // Pagina per modificare una ricetta esistente
   const { id } = useParams()
   const { ricette, aggiorna } = useRecipes()
   const navigate = useNavigate()
+  const [toast, setToast] = useState('') // Stato per gestire i messaggi di errore nel form
 
   const ricetta = ricette.find(r => r.id === id) // Trovo la ricetta da modificare in base all'id passato come parametro nell'URL
 
@@ -23,5 +26,10 @@ export default function RecipeEdit() { // Pagina per modificare una ricetta esis
     navigate(`/ricette/${id}`)
   }
 
-  return <RecipeForm ricettaIniziale={ricetta} onSave={handleSave} />
+  return (
+    <>
+      <RecipeForm ricettaIniziale={ricetta} onSave={handleSave} onError={(msg) => setToast(msg)} />
+      <Toast messaggio={toast} onClose={() => setToast('')} />
+    </>
+  )
 }

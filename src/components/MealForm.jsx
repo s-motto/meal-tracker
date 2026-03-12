@@ -4,7 +4,7 @@ import { useRecipes } from '../hooks/useRecipes'
 
 const TIPO_PASTO = ['colazione', 'pranzo', 'cena', 'snack'] // Array con i tipi di pasto disponibili
 
-export default function MealForm({ onSave, dataSelezionata }) { // Componente per il form di aggiunta pasto, riceve la funzione onSave e la data selezionata come props
+export default function MealForm({ onSave, onError, dataSelezionata }) { // Componente per il form di aggiunta pasto, riceve la funzione onSave e la data selezionata come props
   const [pasto, setPasto] = useState({ ...creaPastoVuoto(), data: dataSelezionata })
   const [usaRicetta, setUsaRicetta] = useState(false)
   const { ricette } = useRecipes()
@@ -24,7 +24,7 @@ export default function MealForm({ onSave, dataSelezionata }) { // Componente pe
   }
 
   const handleSubmit = () => { // Funzione per gestire il salvataggio del pasto
-    if (!pasto.descrizione.trim()) return alert('Aggiungi una descrizione')
+    if (!pasto.descrizione.trim()) return onError('La descrizione è obbligatoria')
     onSave(pasto)
     setPasto({ ...creaPastoVuoto(), data: dataSelezionata })
     setUsaRicetta(false)

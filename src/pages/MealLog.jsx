@@ -110,7 +110,9 @@ export default function MealLog() {
       {/* Form aggiunta pasto */}
       {mostraForm ? (
         <div className="card">
-          <MealForm onSave={handleSave} dataSelezionata={dataSelezionata} />
+          <MealForm onSave={handleSave}
+           onError={(msg) => setToast(msg)} 
+           dataSelezionata={dataSelezionata} />
           <button
             className="btn-secondary w-full mt-3"
             onClick={() => setMostraForm(false)}

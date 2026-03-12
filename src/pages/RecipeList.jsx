@@ -1,9 +1,21 @@
 import { useRecipes } from '../hooks/useRecipes'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 export default function RecipeList() {
     const { ricette, elimina } = useRecipes() // Uso il custom hook per ottenere le ricette e la funzione di eliminazione
     const navigate = useNavigate() // Hook per la navigazione
+    const [confermaId, setConfermaId] = useState(null) // Stato per gestire la conferma di eliminazione
+
+     const handleElimina = (id) => {
+    if (confermaId === id) {
+      elimina(id)
+      setConfermaId(null)
+    } else {
+      setConfermaId(id)
+      setTimeout(() => setConfermaId(null), 3000)
+    }
+  }
 
 return (
   <div className="w-full max-w-4xl mx-auto px-4 py-6">
@@ -52,11 +64,11 @@ return (
               Vedi
             </button>
             <button
-              className="flex-1 btn-danger"
-              onClick={() => elimina(ricetta.id)}
-            >
-              Elimina
-            </button>
+    className={confermaId === ricetta.id ? 'flex-1 btn-primary' : 'flex-1 btn-danger'}
+    onClick={() => handleElimina(ricetta.id)}
+  >
+    {confermaId === ricetta.id ? 'Sicura?' : 'Elimina'}
+  </button>
           </div>
 
         </div>
