@@ -31,7 +31,7 @@ export default function RecipeForm({ onSave}) {
     }
 
     return (
-  <div className="max-w-xl mx-auto p-6 flex flex-col gap-6">
+  <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-6">
     <h1 className="text-2xl">Nuova ricetta</h1>
 
     {/* Nome */}
