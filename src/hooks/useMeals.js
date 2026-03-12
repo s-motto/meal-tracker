@@ -1,7 +1,6 @@
 import {useState} from 'react';
 
-
-const CHIAVE= 'pasti';
+const CHIAVE = 'pasti';
 
 
 function caricaDaStorage(){
