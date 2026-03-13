@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useRecipes } from '../hooks/useRecipes'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { caricaImmagine } from '../services/imageStorage'
 
 export default function RecipeDetail() {
     const { id } = useParams() // Ottengo l'id della ricetta dai parametri dell'URL
@@ -8,6 +9,15 @@ export default function RecipeDetail() {
     const navigate = useNavigate() // Hook per la navigazione
     const ricetta = ricette.find(r => r.id === id) // Trovo la ricetta corrispondente all'id
     const [confermaElimina, setConfermaElimina] = useState(false)
+    const [fotoUrl, setFotoUrl] = useState(null)
+
+    useEffect(() => {
+      if (ricetta?.foto) {
+        caricaImmagine(ricetta.id).then(file => {
+          if (file) setFotoUrl(URL.createObjectURL(file)) // Creo un URL per visualizzare l'immagine
+        })
+      }
+    }, [ricetta]) // L'effetto viene eseguito ogni volta che la ricetta cambia
 
     if (!ricetta) return (
     <div className="max-w-xl mx-auto p-6 text-center">
@@ -31,6 +41,14 @@ export default function RecipeDetail() {
    
     return (
   <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-6">
+
+    {fotoUrl && (
+  <img
+    src={fotoUrl}
+    alt={ricetta.nome}
+    className="w-full h-56 object-cover rounded-xl border border-blush"
+  />
+)}
 
     {/* Header */}
 <div className="flex justify-between items-start">

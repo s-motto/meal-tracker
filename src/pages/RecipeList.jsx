@@ -1,8 +1,31 @@
 import { useRecipes } from '../hooks/useRecipes'
 import { useRecipeFilter } from '../hooks/useRecipeFilter'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import RecipeSearch from '../components/RecipeSearch'
+import { caricaImmagine } from '../services/imageStorage'
+
+function CardFoto({ ricetta }) {
+  const [fotoUrl, setFotoUrl] = useState(null)
+
+  useEffect(() => {
+    if (ricetta.foto) {
+      caricaImmagine(ricetta.id).then(file => {
+        if (file) setFotoUrl(URL.createObjectURL(file))
+      })
+    }
+  }, [ricetta])
+
+  if (!fotoUrl) return null
+
+  return (
+    <img
+      src={fotoUrl}
+      alt={ricetta.nome}
+      className="w-full h-36 object-cover border-b border-blush"
+    />
+  )
+}
 
 export default function RecipeList() {
   const { ricette, elimina } = useRecipes()
@@ -56,33 +79,36 @@ export default function RecipeList() {
 
       <div className="recipe-grid">
         {ricetteFiltrate.map(ricetta => (
-          <div key={ricetta.id} className="card flex flex-col gap-3 shadow-sm min-w-0">
-            <h2 className="text-xl">{ricetta.nome}</h2>
-            {ricetta.calorie && (
-              <p className="text-sm text-primary font-medium">{ricetta.calorie} kcal</p>
-            )}
-            {ricetta.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {ricetta.tags.map(tag => (
-                  <span key={tag} className="bg-blush text-primary text-xs px-3 py-1 rounded-full capitalize">
-                    {tag}
-                  </span>
-                ))}
+          <div key={ricetta.id} className="card p-0 flex flex-col shadow-sm min-w-0 overflow-hidden">
+            <CardFoto ricetta={ricetta} />
+            <div className="flex flex-col gap-3 p-4">
+              <h2 className="text-xl">{ricetta.nome}</h2>
+              {ricetta.calorie && (
+                <p className="text-sm text-primary font-medium">{ricetta.calorie} kcal</p>
+              )}
+              {ricetta.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {ricetta.tags.map(tag => (
+                    <span key={tag} className="bg-blush text-primary text-xs px-3 py-1 rounded-full capitalize">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-2 mt-auto pt-2 border-t border-blush">
+                <button
+                  className="flex-1 btn-secondary"
+                  onClick={() => navigate(`/ricette/${ricetta.id}`)}
+                >
+                  Vedi
+                </button>
+                <button
+                  className={confermaId === ricetta.id ? 'flex-1 btn-primary' : 'flex-1 btn-danger'}
+                  onClick={() => handleElimina(ricetta.id)}
+                >
+                  {confermaId === ricetta.id ? 'Sicura?' : 'Elimina'}
+                </button>
               </div>
-            )}
-            <div className="flex gap-2 mt-auto pt-2 border-t border-blush">
-              <button
-                className="flex-1 btn-secondary"
-                onClick={() => navigate(`/ricette/${ricetta.id}`)}
-              >
-                Vedi
-              </button>
-              <button
-                className={confermaId === ricetta.id ? 'flex-1 btn-primary' : 'flex-1 btn-danger'}
-                onClick={() => handleElimina(ricetta.id)}
-              >
-                {confermaId === ricetta.id ? 'Sicura?' : 'Elimina'}
-              </button>
             </div>
           </div>
         ))}

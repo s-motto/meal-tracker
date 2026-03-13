@@ -9,6 +9,7 @@ export function creaRicettaVuota() {
     istruzioni: '',
     calorie: '',
     tags: [],
+    foto: null, // Campo per l'immagine, inizialmente null
     dataCreazione: new Date().toISOString().split('T')[0] // Aggiungo la data di creazione in formato YYYY-MM-DD
   }
 }
@@ -21,6 +22,7 @@ export function creaPastoVuoto() {
     tipo: 'pranzo', // Imposto il tipo di pasto di default a "pranzo"
     ricettaId: null, // Se è un pasto libero, ricettaId sarà null 
     descrizione: '', // Per i pasti liberi, l'utente può inserire una descrizione
-    calorie: '' // Per i pasti liberi, l'utente può inserire le calorie
+    calorie: '', // Per i pasti liberi, l'utente può inserire le calorie
+    foto: null // Campo per l'immagine, inizialmente null
   }
 }

@@ -1,8 +1,35 @@
-import {useState} from 'react'
+
 import { creaRicettaVuota } from '../data/models' // Importo la funzione per creare una ricetta vuota
+import { useEffect, useState } from 'react'
+import { salvaImmagine, caricaImmagine, eliminaImmagine } from '../services/imageStorage'
 
 export default function RecipeForm({ onSave, onError, ricettaIniziale }) { // Componente per il form di creazione/modifica ricetta, riceve la funzione onSave e la ricetta iniziale come props
     const [ricetta, setRicetta] = useState(ricettaIniziale || creaRicettaVuota()) // Inizializzo lo stato con una ricetta vuota
+    const [preview, setPreview] = useState(null) // Stato per l'anteprima dell'immagine
+
+    useEffect(() => { // Effetto per caricare l'immagine se la ricetta ha un campo foto
+      if(ricettaIniziale?.foto) {
+        caricaImmagine(ricettaIniziale.id).then(file => {
+          if(file) setPreview(URL.createObjectURL(file)) // Se il file esiste, creo un URL per l'anteprima
+        })
+      }
+    }, [] // L'effetto viene eseguito solo una volta al montaggio del componente
+  )
+    const handleFoto = (e) => {
+      const file = e.target.files[0] // Prendo il primo file selezionato
+      if(!file) return // Se non c'è un file, esco dalla funzione
+      if(file.size > 2 * 1024 * 1024) return onError?.('L\'immagine deve essere inferiore a 2MB') // Verifico che il file sia inferiore a 2MB, altrimenti mostro un errore
+      if(!file.type.startsWith('image/')) return onError?.('Il file deve essere un\'immagine') // Verifico che il file sia un'immagine, altrimenti mostro un errore
+      setPreview(URL.createObjectURL(file)) // Creo un URL per l'anteprima dell'immagine
+      handleCampo('foto', file.name) // Aggiorno il campo foto della ricetta con il nome del file
+      salvaImmagine(ricetta.id, file) // Salvo l'immagine nel database con l'id della ricetta
+    }
+
+    const rimuoviFoto = () => {
+      setPreview(null) // Rimuovo l'anteprima dell'immagine
+      handleCampo('foto', null) // Imposto il campo foto della ricetta a null
+      eliminaImmagine(ricetta.id) // Elimino l'immagine dal database
+    }
 
     const handleCampo = (campo, valore) => {
         setRicetta(prev => ({ ...prev, [campo]: valore })) // Aggiorno il campo specificato nella ricetta
@@ -125,6 +152,36 @@ export default function RecipeForm({ onSave, onError, ricettaIniziale }) { // Co
         ))}
       </div>
     </div>
+
+    {/* Foto */}
+<div className="flex flex-col gap-2">
+  <label className="text-sm text-gray-500">Foto</label>
+  {preview ? (
+    <div className="relative">
+      <img
+        src={preview}
+        alt="Preview"
+        className="w-full h-48 object-cover rounded-xl border border-blush"
+      />
+      <button
+        className="absolute top-2 right-2 bg-white rounded-full px-2 py-1 text-sm btn-danger"
+        onClick={rimuoviFoto}
+      >
+        ✕
+      </button>
+    </div>
+  ) : (
+    <label className="btn-secondary text-center cursor-pointer">
+      + Aggiungi foto
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFoto}
+      />
+    </label>
+  )}
+</div>
 
     <button className="btn-primary w-full" onClick={handleSubmit}>
       Salva ricetta
