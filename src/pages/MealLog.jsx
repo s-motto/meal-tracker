@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useMeals } from '../hooks/useMeals'
 import MealForm from '../components/MealForm'
 import Toast from '../components/Toast'
@@ -21,10 +21,23 @@ function formatData(data) {
 export default function MealLog() {
     const [dataSelezionata, setDataSelezionata] = useState(dataOggi()) // stato per la data selezionata, inizializzata con la data odierna
     const [mostraForm, setMostraForm] = useState(false) // stato per mostrare o nascondere il form
-    const {aggiungi, elimina, getMealByDate} = useMeals() // prendo le funzioni per aggiungere, eliminare e ottenere pasti per data dal contesto
+    const {aggiungi, elimina, getMealByDate, salvaBenessere, getBenessereByDate} = useMeals() // prendo le funzioni per aggiungere, eliminare e ottenere pasti per data dal contesto
     const [toast, setToast] = useState('') // stato per il messaggio del toast
     const [toastId, setToastId] = useState(0) // stato per forzare il ri-render del toast quando il messaggio cambia
     const [confermaId, setConfermaId] = useState(null) // stato per gestire la conferma di eliminazione del pasto
+
+    const [notaBenessere, setNotaBenessere] = useState('') // stato per la nota di benessere del giorno
+
+    useEffect(() => {
+      setNotaBenessere(getBenessereByDate(dataSelezionata)) // aggiorno la nota di benessere quando cambia la data selezionata
+    }, [dataSelezionata])
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        salvaBenessere(dataSelezionata, notaBenessere) // salvo la nota di benessere dopo 1.5 secondi dall'ultima modifica
+      }, 1500)
+      return () => clearTimeout(timer) // pulisco il timer se la nota cambia di nuovo prima dei 1.5 secondi
+    }, [notaBenessere])
 
     const mostraToast = (msg) => {
       setToast(msg)
@@ -118,6 +131,14 @@ export default function MealLog() {
      <div className="card shadow-sm">
   <p className="text-sm text-gray-500">Calorie totali: <span className="text-gray-700 font-medium">{totaleCalorie} kcal</span></p>
 </div>
+
+{/* Nota benessere */}
+<textarea
+  className="input-base h-20 resize-none text-sm text-gray-600"
+  placeholder="Come ti sei sentita oggi?"
+  value={notaBenessere}
+  onChange={e => setNotaBenessere(e.target.value)}
+/>
 
       {/* Form aggiunta pasto */}
       {mostraForm ? (

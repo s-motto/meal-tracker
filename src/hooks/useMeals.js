@@ -5,6 +5,7 @@ const CHIAVE = 'pasti'
 
 export function useMeals() {
   const [pasti, setPasti] = useState(() => carica(CHIAVE)) // inizializzo lo stato dei pasti caricando i dati dal localStorage
+  const [benessere, setBenessere] = useState(() => carica('benessere') || {}) // stato per il benessere giornaliero
 
   const aggiungi = (pasto) => { // funzione per aggiungere un pasto
     const nuovi = [...pasti, pasto]
@@ -28,5 +29,17 @@ export function useMeals() {
     return pasti.filter(p => p.data === data)
   }
 
-  return { pasti, aggiungi, aggiorna, elimina, getMealByDate }
+  
+
+  const salvaBenessere = (data, testo) => {
+  const nuovi = { ...benessere, [data]: testo }
+  setBenessere(nuovi)
+  salva('benessere', nuovi)
+}
+
+const getBenessereByDate = (data) => {
+  return benessere[data] || ''
+}
+
+  return { pasti, aggiungi, aggiorna, elimina, getMealByDate, salvaBenessere, getBenessereByDate }
 }
