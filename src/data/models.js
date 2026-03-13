@@ -26,3 +26,17 @@ export function creaPastoVuoto() {
     foto: null // Campo per l'immagine, inizialmente null
   }
 }
+
+// Funzione per creare una misurazione vuota
+
+export function creaMisurazioneVuota() {
+  return {
+    id: uuidv4(),
+    data: new Date().toISOString().split('T')[0],
+    braccia: '',
+    cosce: '',
+    petto: '',
+    vita: '',
+    fianchi: ''
+  }
+}

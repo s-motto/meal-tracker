@@ -8,6 +8,7 @@ import { useRecipes } from './hooks/useRecipes'
 import RecipeEdit from './pages/RecipeEdit'
 import { useState } from 'react'
 import Toast from './components/Toast'
+import Profile from './pages/Profile'
 
 function NuovaRicetta() {
   const { aggiungi } = useRecipes()
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/ricette/nuova" element={<NuovaRicetta />} />
         <Route path="/ricette/:id" element={<RecipeDetail />} />
         <Route path="/ricette/:id/modifica" element={<RecipeEdit />} />
+        <Route path="/profilo" element={<Profile />} />
       </Routes>
     </Layout>
   )

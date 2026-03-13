@@ -18,6 +18,12 @@ export default function Navbar() {
           >
             Ricette
           </NavLink>
+           <NavLink
+            to="/profilo"
+            className={({ isActive }) => isActive ? 'nav-link-attivo' : 'nav-link'}
+          >
+            ⚙️
+          </NavLink>
         </div>
       </div>
     </nav>
