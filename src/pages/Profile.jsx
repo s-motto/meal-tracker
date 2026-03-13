@@ -8,6 +8,25 @@ import {
 } from 'recharts'
 
 const MISURE = ['braccia', 'cosce', 'petto', 'vita', 'fianchi']
+const MISURE_CON_PESO = ['peso', ...MISURE]
+
+const UNITA = {
+  peso: 'kg',
+  braccia: 'cm',
+  cosce: 'cm',
+  petto: 'cm',
+  vita: 'cm',
+  fianchi: 'cm'
+}
+
+const COLORI = {
+  peso: '#89023E',
+  braccia: '#89023E',
+  cosce: '#CC7178',
+  petto: '#C7D9B7',
+  vita: '#89023E',
+  fianchi: '#CC7178'
+}
 
 function formatData(data) {
   return new Date(data).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })
@@ -23,27 +42,27 @@ export default function Profile() {
   const [mostraPeso, setMostraPeso] = useState(false)
   const [bozzaPeso, setBozzaPeso] = useState({ data: new Date().toISOString().split('T')[0], valore: '' })
 
-  const mostraToast = (msg) => { // funzione per mostrare un messaggio di toast
+  const mostraToast = (msg) => {
     setToast(msg)
     setToastId(id => id + 1)
   }
 
-  const handleSalvaProfilo = () => { // funzione per salvare le modifiche al profilo
+  const handleSalvaProfilo = () => {
     aggiornaProfilo(bozzaProfilo)
     setModificaProfilo(false)
     mostraToast('Profilo aggiornato')
   }
 
-  const handleAggiornaCampo = (campo, valore) => { // funzione per aggiornare un campo del profilo durante la modifica
+  const handleAggiornaCampo = (campo, valore) => {
     setBozzaProfilo(prev => ({ ...prev, [campo]: valore }))
   }
 
-  const handleAggiornaMisurazione = (campo, valore) => { // funzione per aggiornare un campo della nuova misurazione mentre l'utente la sta inserendo
+  const handleAggiornaMisurazione = (campo, valore) => {
     setNuovaMisurazione(prev => ({ ...prev, [campo]: valore }))
   }
 
   const handleSalvaMisurazione = () => {
-    const haValori = MISURE.some(m => nuovaMisurazione[m] !== '') // verifico che almeno una delle misurazioni abbia un valore inserito
+    const haValori = MISURE.some(m => nuovaMisurazione[m] !== '')
     if (!haValori) return mostraToast('Inserisci almeno una misurazione')
     aggiungiMisurazione(nuovaMisurazione)
     setNuovaMisurazione(creaMisurazioneVuota())
@@ -51,79 +70,85 @@ export default function Profile() {
   }
 
   const eta = calcolaEta()
-  const datiGrafico = misurazioni.map(m => ({ // preparo i dati per il grafico, formattando la data e convertendo le misurazioni in numeri o null se vuote
-    data: formatData(m.data), // 
-    ...Object.fromEntries(MISURE.map(k => [k, m[k] ? Number(m[k]) : null]))
+
+  // include peso nei dati grafico
+  const datiGrafico = misurazioni.map(m => ({
+    data: formatData(m.data),
+    ...Object.fromEntries(MISURE_CON_PESO.map(k => [k, m[k] ? Number(m[k]) : null]))
   }))
 
-  const COLORI = {
-    braccia: '#89023E',
-    cosce: '#CC7178',
-    petto: '#C7D9B7',
-    vita: '#89023E',
-    fianchi: '#CC7178'
-  }
+  // ultimo peso salvato nelle misurazioni
+  const ultimoPeso = [...misurazioni].reverse().find(m => m.peso)
 
   return (
     <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-8">
 
       {/* Dati personali */}
-<div className="card shadow-sm flex flex-col gap-4">
-<div className="flex justify-between items-center flex-wrap gap-2">
-        <h1 className="text-2xl">Profilo</h1>
-        <div className="flex gap-2">
-            <button
-            className="btn-secondary"
-            onClick={() => { setMostraPeso(v => !v) }}
-            >
-            {mostraPeso ? 'Annulla' : 'Peso'}
-            </button>
-            <button
-            className="btn-secondary"
-            onClick={() => { setBozzaProfilo(profilo); setModificaProfilo(v => !v) }}
-            >
-            {modificaProfilo ? 'Annulla' : 'Modifica'}
-            </button>
-        </div>
+      <div className="card shadow-sm flex flex-col gap-4">
+
+        <div className="flex justify-between items-center flex-wrap gap-2">
+          <h1 className="text-2xl">Profilo</h1>
+          <div className="flex gap-2">
+           <button
+  className="btn-secondary"
+  onClick={() => {
+    setMostraPeso(v => !v)
+    setModificaProfilo(false)  // ← chiude modifica
+  }}
+>
+  {mostraPeso ? 'Annulla' : '⚖️ Peso'}
+</button>
+
+<button
+  className="btn-secondary"
+  onClick={() => {
+    setBozzaProfilo(profilo)
+    setModificaProfilo(v => !v)
+    setMostraPeso(false)  // ← chiude peso
+  }}
+>
+  {modificaProfilo ? 'Annulla' : 'Modifica'}
+</button>
+          </div>
         </div>
 
         {mostraPeso && (
-  <div className="flex flex-col gap-3 border-t border-blush pt-3">
-    <div className="flex gap-3">
-      <div className="flex flex-col gap-1 flex-1">
-        <label className="text-sm text-gray-500">Data</label>
-        <input
-          className="input-base"
-          type="date"
-          value={bozzaPeso.data}
-          onChange={e => setBozzaPeso(p => ({ ...p, data: e.target.value }))}
-        />
-      </div>
-      <div className="flex flex-col gap-1 flex-1">
-        <label className="text-sm text-gray-500">Peso (kg)</label>
-        <input
-          className="input-base"
-          type="number"
-          placeholder="es. 65"
-          value={bozzaPeso.valore}
-          onChange={e => setBozzaPeso(p => ({ ...p, valore: e.target.value }))}
-        />
-      </div>
-    </div>
-    <button
-      className="btn-primary w-full"
-      onClick={() => {
-        if (!bozzaPeso.valore) return mostraToast('Inserisci il peso')
-        aggiungiMisurazione({ ...creaMisurazioneVuota(), id: crypto.randomUUID(), data: bozzaPeso.data, peso: bozzaPeso.valore })
-        setBozzaPeso({ data: new Date().toISOString().split('T')[0], valore: '' })
-        setMostraPeso(false)
-        mostraToast('Peso aggiornato')
-      }}
-    >
-      Salva peso
-    </button>
-  </div>
-)}
+          <div className="flex flex-col gap-3 border-t border-blush pt-3">
+            <div className="flex gap-3">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm text-gray-500">Data</label>
+                <input
+                  className="input-base"
+                  type="date"
+                  value={bozzaPeso.data}
+                  onChange={e => setBozzaPeso(p => ({ ...p, data: e.target.value }))}
+                />
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm text-gray-500">Peso (kg)</label>
+                <input
+                  className="input-base"
+                  type="number"
+                  placeholder="es. 65"
+                  value={bozzaPeso.valore}
+                  onChange={e => setBozzaPeso(p => ({ ...p, valore: e.target.value }))}
+                />
+              </div>
+            </div>
+            <button
+              className="btn-primary w-full"
+              onClick={() => {
+                if (!bozzaPeso.valore) return mostraToast('Inserisci il peso')
+                aggiungiMisurazione({ ...creaMisurazioneVuota(), id: crypto.randomUUID(), data: bozzaPeso.data, peso: bozzaPeso.valore })
+                setBozzaPeso({ data: new Date().toISOString().split('T')[0], valore: '' })
+                setMostraPeso(false)
+                mostraToast('Peso aggiornato')
+              }}
+            >
+              Salva peso
+            </button>
+          </div>
+        )}
 
         {modificaProfilo ? (
           <div className="flex flex-col gap-3">
@@ -144,25 +169,14 @@ export default function Profile() {
                 onChange={e => handleAggiornaCampo('dataNascita', e.target.value)}
               />
             </div>
-            <div className="flex gap-3">
-              <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm text-gray-500">Peso (kg)</label>
-                <input
-                  className="input-base"
-                  type="number"
-                  value={bozzaProfilo.peso}
-                  onChange={e => handleAggiornaCampo('peso', e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm text-gray-500">Altezza (cm)</label>
-                <input
-                  className="input-base"
-                  type="number"
-                  value={bozzaProfilo.altezza}
-                  onChange={e => handleAggiornaCampo('altezza', e.target.value)}
-                />
-              </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm text-gray-500">Altezza (cm)</label>
+              <input
+                className="input-base"
+                type="number"
+                value={bozzaProfilo.altezza}
+                onChange={e => handleAggiornaCampo('altezza', e.target.value)}
+              />
             </div>
             <button className="btn-primary w-full" onClick={handleSalvaProfilo}>
               Salva
@@ -173,14 +187,17 @@ export default function Profile() {
             {profilo.nome && <p className="text-lg font-medium">{profilo.nome}</p>}
             {eta !== null && <p className="text-gray-500">{eta} anni</p>}
             <div className="flex gap-6 mt-1">
-              {profilo.peso && <p className="text-gray-600">⚖️ {profilo.peso} kg</p>}
+              {(ultimoPeso || profilo.peso) && (
+                <p className="text-gray-600">⚖️ {ultimoPeso ? ultimoPeso.peso : profilo.peso} kg</p>
+              )}
               {profilo.altezza && <p className="text-gray-600">📏 {profilo.altezza} cm</p>}
             </div>
-            {!profilo.nome && !profilo.peso && !profilo.altezza && (
+            {!profilo.nome && !profilo.altezza && !ultimoPeso && !profilo.peso && (
               <p className="text-gray-400">Nessun dato ancora. Clicca Modifica per iniziare.</p>
             )}
           </div>
         )}
+
       </div>
 
       {/* Nuova misurazione */}
@@ -210,9 +227,10 @@ export default function Profile() {
       {misurazioni.length > 1 && (
         <div className="flex flex-col gap-6">
           <h2 className="text-xl">Andamento</h2>
-          {MISURE.map(misura => {
+          {MISURE_CON_PESO.map(misura => {
             const haValori = datiGrafico.some(d => d[misura] !== null)
             if (!haValori) return null
+            const unita = UNITA[misura]
             return (
               <div key={misura} className="card shadow-sm flex flex-col gap-3">
                 <h3 className="text-sm font-medium capitalize text-gray-600">{misura}</h3>
@@ -220,8 +238,8 @@ export default function Profile() {
                   <LineChart data={datiGrafico}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#FFD9DA" />
                     <XAxis dataKey="data" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} unit=" cm" />
-                    <Tooltip formatter={(v) => [`${v} cm`, misura]} />
+                    <YAxis tick={{ fontSize: 11 }} unit={` ${unita}`} />
+                    <Tooltip formatter={(v) => [`${v} ${unita}`, misura]} />
                     <Line
                       type="monotone"
                       dataKey={misura}
@@ -255,6 +273,11 @@ export default function Profile() {
                 <button className="btn-danger" onClick={() => eliminaMisurazione(m.id)}>✕</button>
               </div>
               <div className="flex flex-wrap gap-3">
+                {m.peso && (
+                  <span className="text-sm text-gray-600">
+                    peso: <span className="text-primary font-medium">{m.peso} kg</span>
+                  </span>
+                )}
                 {MISURE.map(misura => m[misura] && (
                   <span key={misura} className="text-sm text-gray-600 capitalize">
                     {misura}: <span className="text-primary font-medium">{m[misura]} cm</span>
