@@ -20,6 +20,8 @@ export default function Profile() {
   const [nuovaMisurazione, setNuovaMisurazione] = useState(creaMisurazioneVuota())
   const [toast, setToast] = useState('')
   const [toastId, setToastId] = useState(0)
+  const [mostraPeso, setMostraPeso] = useState(false)
+  const [bozzaPeso, setBozzaPeso] = useState({ data: new Date().toISOString().split('T')[0], valore: '' })
 
   const mostraToast = (msg) => { // funzione per mostrare un messaggio di toast
     setToast(msg)
@@ -66,19 +68,62 @@ export default function Profile() {
     <div className="max-w-xl mx-auto px-4 py-6 flex flex-col gap-8">
 
       {/* Dati personali */}
-      <div className="card shadow-sm flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl">Profilo</h1>
-          <button
+<div className="card shadow-sm flex flex-col gap-4">
+<div className="flex justify-between items-center flex-wrap gap-2">
+        <h1 className="text-2xl">Profilo</h1>
+        <div className="flex gap-2">
+            <button
             className="btn-secondary"
-            onClick={() => {
-              setBozzaProfilo(profilo)
-              setModificaProfilo(v => !v)
-            }}
-          >
+            onClick={() => { setMostraPeso(v => !v) }}
+            >
+            {mostraPeso ? 'Annulla' : 'Peso'}
+            </button>
+            <button
+            className="btn-secondary"
+            onClick={() => { setBozzaProfilo(profilo); setModificaProfilo(v => !v) }}
+            >
             {modificaProfilo ? 'Annulla' : 'Modifica'}
-          </button>
+            </button>
         </div>
+        </div>
+
+        {mostraPeso && (
+  <div className="flex flex-col gap-3 border-t border-blush pt-3">
+    <div className="flex gap-3">
+      <div className="flex flex-col gap-1 flex-1">
+        <label className="text-sm text-gray-500">Data</label>
+        <input
+          className="input-base"
+          type="date"
+          value={bozzaPeso.data}
+          onChange={e => setBozzaPeso(p => ({ ...p, data: e.target.value }))}
+        />
+      </div>
+      <div className="flex flex-col gap-1 flex-1">
+        <label className="text-sm text-gray-500">Peso (kg)</label>
+        <input
+          className="input-base"
+          type="number"
+          placeholder="es. 65"
+          value={bozzaPeso.valore}
+          onChange={e => setBozzaPeso(p => ({ ...p, valore: e.target.value }))}
+        />
+      </div>
+    </div>
+    <button
+      className="btn-primary w-full"
+      onClick={() => {
+        if (!bozzaPeso.valore) return mostraToast('Inserisci il peso')
+        aggiungiMisurazione({ ...creaMisurazioneVuota(), id: crypto.randomUUID(), data: bozzaPeso.data, peso: bozzaPeso.valore })
+        setBozzaPeso({ data: new Date().toISOString().split('T')[0], valore: '' })
+        setMostraPeso(false)
+        mostraToast('Peso aggiornato')
+      }}
+    >
+      Salva peso
+    </button>
+  </div>
+)}
 
         {modificaProfilo ? (
           <div className="flex flex-col gap-3">
